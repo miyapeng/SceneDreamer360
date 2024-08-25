@@ -13,7 +13,7 @@
 </div>
 
 
-[![Paper](http://img.shields.io/badge/paper-arxiv.XXXXXXX-B31B1B.svg)](https://arxiv.org/abs/XXXXXXX)
+[![Paper](http://img.shields.io/badge/paper-arxiv.5811784-B31B1B.svg)](https://arxiv.org/abs/5811784)
 
 ![Model Pipeline](image.png)
 
