@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Scene Generation, Gaussian Splatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SceneDreamer360: Text-Driven 3D-Consistent Scene Generation with Panoramic Gaussian Splatting</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://github.com/miyapeng">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://arxiv.org/abs/2408.13712">
+            RMARN
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full has-text-centered">
+          
+          <h1 class="title is-1">SceneDreamer360</h1>
+          <h1 class="title is-2">Text-Driven 3D-Consistent Scene Generation with Panoramic Gaussian Splatting</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://liwrui.github.io/">Wenrui Li</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://utkarshsinha.com">Yapeng Mi</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://jonbarron.info">Fucheng Cai</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="http://sofienbouaziz.com">Zhe Yang</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=rUOpCEYAAAAJ">Wangmeng Zuo</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://homepage.hit.edu.cn/xtwang">Xingtao Wang</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.cz/citations?hl=zh-CN&user=4LsZhDgAAAAJ&view_op=list_works&sortby=pubdate">Xiaopeng Fan</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Harbin Institute of Technology,</span>
+            <span class="author-block"><sup>2</sup>University of Electronic Science and Technology of China</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2408.13711v1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2408.13711v1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/liwrui/SceneDreamer360"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- Replace the video element with an image element -->
+      <img src="./static/images/teaser.jpg" alt="Teaser Image" style="width: 100%; height: auto;">
+      <h2 class="subtitle has-text-centered">
+        We introduce SceneDreamer360, a text-based 3D scene generation framework designed to create realistic 3D
+        scenes with high consistency across different viewpoints.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <style>
+        .results-carousel .item {
+          border: none;
+        }
+      </style>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt1.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">a dining room with rectangular dining table with chairs, a pendant light, and paintings on the wall</p>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt2.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">a living room with a three-seater sofa, a coffee table, a TV stand, and some decorations on the TV stand</p>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt3.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">a kitchen with an island, bar stools, hanging cabinets, built-in oven and microwave, and some kitchen utensils on the countertop
+          </p>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt4.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">A reading nook with a comfortable armchair, a small bookshelf, a floor lamp, and a side table with a cup of tea. Large windows with flowing curtains provide natural light.</p>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt5.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">A home office with a wooden desk, a computer, a bookshelf filled with books and decor items, and a large window with a view of a garden.</p>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt6.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">A bedroom with a double bed, bedside tables with lamps, soft linens, a dresser with a mirror, and a large window with sheer curtains.</p>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt7.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">A bathroom with a glass shower, a freestanding bathtub, a single sink with a mirror, white tiles, and a towel rack.</p>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/prompt8.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-6">A dining area with a round table, four chairs, a pendant light, and a sideboard with decorative items and plants.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Text-driven 3D scene generation has seen significant advancements recently. However, most existing methods generate single-view images using generative models and then
+            stitch them together in 3D space. This independent generation for each view often results in spatial inconsistency and
+            implausibility in the 3D scenes. To address this challenge, we
+            proposed a novel text-driven 3D-consistent scene generation
+            model: SceneDreamer360. Our proposed method leverages
+            a text-driven panoramic image generation model as a prior
+            for 3D scene generation and employs 3D Gaussian Splatting
+            (3DGS) to ensure consistency across multi-view panoramic
+            images. Specifically, SceneDreamer360 enhances the finetuned Panfusion generator with a three-stage panoramic enhancement, enabling the generation of high-resolution, detailrich panoramic images. During the 3D scene construction, a
+            novel point cloud fusion initialization method is used, producing higher quality and spatially consistent point clouds.
+            Our extensive experiments demonstrate that compared to
+            other methods, SceneDreamer360 with its panoramic image
+            generation and 3DGS can produce higher quality, spatially
+            consistent, and visually appealing 3D scenes from any text
+            prompt.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Image and caption for pipeline -->
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-full">
+      <h2 class="title is-3">Pipeline</h2>
+      <div class="publication-image">
+        <img src="./static/images/pipeline.png" alt="Pipeline Overview">
+      </div>
+      <div class="content has-text-justified">
+      <p>
+        The architecture of the SceneDreamer360. SceneDreamer360 generates an initial panorama from any open-world textual description using the fine-tuned PanFusion model. This panorama is then enhanced to produce a high-resolution 3072 × 6144 image. 
+        In the second stage, multi-view algorithms generate multi-view images, and a monocular depth estimation model provides depth maps for initial point cloud fusion. Finally, 3D Gaussian Splatting is used to reconstruct and render the point cloud, resulting in a complete and consistent 3D scene.
+      </p>
+      </div>
+    </div>
+  </div>
+<!--/ End of Image and caption. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Animation. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Experiment</h2>
+
+        <!-- Interpolating. -->
+        <h3 class="title is-4">Visualization</h3>
+        <div class="content has-text-justified">
+          <p>
+            We visualize the generated scenes using various prompts, as illustrated in the following figure. The method successfully
+            generates 3D spatial scenes consistent with the text prompts.Additionally, part of the output demonstrates that images
+            can be rendered from arbitrary trajectory views, showcasing the generalizability of our method.
+          </p>
+        </div>
+        <div class="publication-image">
+          <img src="./static/images/visualization_sup.png" alt="Pipeline Overview">
+          <figcaption class="has-text-centered is-size-6">The visualization of SceneDreamer360. </figcaption>
+        </div>        
+        <br/>
+        <!--/ Interpolating. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Comparision</h3>
+        <div class="content has-text-justified">
+          <p>
+            We visually compared our method with LucidDreamer and Text2Room using identical spatial text prompts, as shown in the following figure. Our
+            method outperforms the others by producing more consistent, complete, and detailed 3D spatial scene point clouds.The use of 3DGS enables superior detail and continuous
+            object surfaces, surpassing Text2Room in clarity. Additionally, our Stage 1 panoramic optimization captures more spatial details, and our designed rendering trajectory generates more comprehensive scenes than LucidDreamer.
+          </p>
+        </div>
+        <div class="publication-image">
+          <img src="./static/images/visualization.png" alt="Pipeline Overview">
+          <figcaption class="has-text-centered is-size-6">The visualization comparison of the proposed SceneDreamer360 between current methods. </figcaption>
+        </div> 
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+
+    <!-- Concurrent Work. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Acknowledgements</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            We would like to express our sincere gratitude to the authors of the following papers whose work has significantly contributed to our research:
+          </p>
+          <p>
+            <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">Panfusion</a> introduced a model capable of generating scene-consistent panoramic images, which acted as a prior for our scene generation.
+          </p>
+          <p>
+            <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">3D Gaussian Splatting</a> provided significant assistance for the realistic 3D scene reconstruction part of our work.
+          </p>
+          <p>
+            <a href="https://luciddreamer-cvlab.github.io/">LucidDreamer</a> and <a href="https://dreamscene360.github.io/">DreamScene360</a>
+            offer many valuable lessons for our work. They are good works. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{li2024scenedreamer360,
+  title={SceneDreamer360: Text-Driven 3D-Consistent Scene Generation with Panoramic Gaussian Splatting},
+  author={Li, Wenrui and Mi, Yapeng and Cai, Fucheng and Yang, Zhe and Zuo, Wangmeng and Wang, Xingtao and Fan, Xiaopeng},
+  journal={arXiv preprint arXiv:2408.13711},
+  year={2024},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/liwrui/SceneDreamer360" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            The <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> for the website was taken from Nerfies. 
+              We appreciate the authors sharing the templates.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
