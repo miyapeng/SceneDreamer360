@@ -3,14 +3,15 @@
 <div align="center">
 
 [**Wenrui Li**](https://liwrui.github.io/),
-**Yapeng Mi**,
-**Fucheng Cai**,
-**Zhe Yang**,
+[**Yapeng Mi**](https://github.com/miyapeng),
+[**Fucheng Cai**](https://github.com/HITCai),
+[**Zhe Yang**](https://github.com/xia-zhe),
 [**Wangmeng Zuo**](https://scholar.google.com/citations?user=rUOpCEYAAAAJ),
 [**Xingtao Wang**](https://homepage.hit.edu.cn/xtwang),
 [**Xiaopeng Fan**](https://scholar.google.cz/citations?hl=zh-CN&user=4LsZhDgAAAAJ&view_op=list_works&sortby=pubdate)
 
 </div>
+
 
 
 [![Paper](http://img.shields.io/badge/paper-arxiv.5811784-B31B1B.svg)](https://arxiv.org/abs/5811784)
