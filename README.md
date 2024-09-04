@@ -10,7 +10,7 @@
 [**Xingtao Wang**](https://homepage.hit.edu.cn/xtwang),
 [**Xiaopeng Fan**](https://scholar.google.cz/citations?hl=zh-CN&user=4LsZhDgAAAAJ&view_op=list_works&sortby=pubdate)
 
-[\[🌐 Project Page\]](https://miyapeng.github.io/SceneDreamer360/) [\[📜 Paper\]](https://arxiv.org/abs/2408.13711)
+[\[🌐 Project Page\]](https://scenedreamer360.github.io/) [\[📜 Paper\]](https://arxiv.org/abs/2408.13711)
 </div>
 
 
