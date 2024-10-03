@@ -43,7 +43,7 @@ cd ../../..
 
 ## Checkpoints
 Download [PanFusion checkpoints](https://monashuni-my.sharepoint.com/:u:/g/personal/cheng_zhang_monash_edu/EeTrujeSOgdHh7vWsjXuMPAB8JtTaXS1uR8sp0y1kwQ4NQ?e=cI5jec) and move to `logs/4142dlo4/checkpoints`.
-Also, download the panoramic optimization model from [Baidu Cloud](https://pan.baidu.com/s/1i_ypdWHknp2kqbjl0_zAuw?pwd=w2vr), and extract model.zip into `Enhance_img/`.
+Also, download the panoramic optimization model from [Baidu Cloud](https://pan.baidu.com/s/1i_ypdWHknp2kqbjl0_zAuw?pwd=w2vr), and extract models.zip into `Enhance_img/`.
 
 ## Running
 Modify the parameters in the `config.json` file to suit your test cases.
