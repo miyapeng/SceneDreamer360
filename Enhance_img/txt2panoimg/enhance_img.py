@@ -4,8 +4,9 @@ from typing import Any, Dict
 
 import numpy as np
 import torch
+import time
 from basicsr.archs.rrdbnet_arch import RRDBNet
-from diffusers import (ControlNetModel, DiffusionPipeline,
+from diffusers import (ControlNetModel, StableDiffusionXLControlNetPipeline,DiffusionPipeline,
                        EulerAncestralDiscreteScheduler,
                        UniPCMultistepScheduler)
 from PIL import Image
@@ -16,7 +17,9 @@ from .pipeline_sr import StableDiffusionControlNetImg2ImgPanoPipeline
 
 
 class Text2360PanoramaImagePipeline(DiffusionPipeline):
-    def __init__(self, model: str, device: str = 'cuda', **kwargs):
+
+    # def __init__(self, model: str, device: str = 'cuda', **kwargs):
+    def __init__(self, model: str, device: str = 'cuda'):
         super().__init__()
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'
@@ -24,15 +27,15 @@ class Text2360PanoramaImagePipeline(DiffusionPipeline):
         if device == 'gpu':
             device = 'cuda'
 
-        torch_dtype = kwargs.get('torch_dtype', torch.float16)
-        enable_xformers_memory_efficient_attention = kwargs.get(
-            'enable_xformers_memory_efficient_attention', True)
+        torch_dtype = torch.float16
+        enable_xformers_memory_efficient_attention = True
 
         model_id = model + '/sd-base/'
 
         # init base model
         self.pipe = StableDiffusionBlendExtendPipeline.from_pretrained(
             model_id, torch_dtype=torch_dtype).to(device)
+
         self.pipe.vae.enable_tiling()
         self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(
             self.pipe.scheduler.config)
@@ -103,44 +106,32 @@ class Text2360PanoramaImagePipeline(DiffusionPipeline):
             raise ValueError(
                 f'Expected the input to be a dictionary, but got {type(input)}'
             )
-        num_inference_steps = inputs.get('num_inference_steps', 20)
-        guidance_scale = inputs.get('guidance_scale', 7.5)
+
         preset_a_prompt = 'photorealistic, trend on artstation, ((best quality)), ((ultra high res))'
-        add_prompt = inputs.get('add_prompt', preset_a_prompt)
-        preset_n_prompt = 'persons, complex texture, small objects, sheltered, blur, worst quality, '\
-                          'low quality, zombie, logo, text, watermark, username, monochrome, '\
+        add_prompt = preset_a_prompt
+        preset_n_prompt = 'persons, complex texture, small objects, sheltered, blur, worst quality, ' \
+                          'low quality, zombie, logo, text, watermark, username, monochrome, ' \
                           'complex lighting'
-        negative_prompt = inputs.get('negative_prompt', preset_n_prompt)
-        seed = inputs.get('seed', -1)
+        negative_prompt = preset_n_prompt
+        seed = -1
         upscale = inputs.get('upscale', True)
-        refinement = inputs.get('refinement', True)
+        refinement = True
 
-        guidance_scale_sr_step1 = inputs.get('guidance_scale_sr_step1', 15)
-        guidance_scale_sr_step2 = inputs.get('guidance_scale_sr_step1', 17)
+        guidance_scale_sr_step1 = 15
+        guidance_scale_sr_step2 = 17
 
-        if 'prompt' in inputs.keys():
-            prompt = inputs['prompt']
-        else:
-            # for demo_service
-            prompt = forward_params.get('prompt', 'the living room')
 
+
+        output_img = inputs['pano_image']
+        prompt = inputs['prompt']
         print(f'Test with prompt: {prompt}')
 
         if seed == -1:
+            random.seed(time.time())
             seed = random.randint(0, 65535)
         print(f'global seed: {seed}')
 
         generator = torch.manual_seed(seed)
-
-        prompt = '<360panorama>, ' + prompt + ', ' + add_prompt
-        output_img = self.pipe(
-            prompt,
-            negative_prompt=negative_prompt,
-            num_inference_steps=num_inference_steps,
-            height=512,
-            width=1024,
-            guidance_scale=guidance_scale,
-            generator=generator).images[0]
 
         if not upscale:
             print('finished')
@@ -148,8 +139,9 @@ class Text2360PanoramaImagePipeline(DiffusionPipeline):
             print('inputs: upscale=True, running upscaler.')
             print('running upscaler step1. Initial super-resolution')
             sr_scale = 2.0
+
             output_img = self.pipe_sr(
-                prompt.replace('<360panorama>, ', ''),
+                prompt,
                 negative_prompt=negative_prompt,
                 image=output_img.resize(
                     (int(1536 * sr_scale), int(768 * sr_scale))),
@@ -182,7 +174,7 @@ class Text2360PanoramaImagePipeline(DiffusionPipeline):
                 )
                 sr_scale = 4
                 output_img = self.pipe_sr(
-                    prompt.replace('<360panorama>, ', ''),
+                    prompt,
                     negative_prompt=negative_prompt,
                     image=output_img.resize(
                         (int(1536 * sr_scale), int(768 * sr_scale))),
